@@ -1,14 +1,17 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react'; // Added act
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import JobForm from '../JobForm';
-import { addContact } from '../../services/api';
+import * as api from '../../services/api'; // Import as namespace
 
 // Mock the api module
-vi.mock('../../services/api', () => ({
-  addContact: vi.fn()
-}));
+vi.mock('../../services/api', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual, // Spread actual module to keep other exports if any
+    addContact: vi.fn(), // Mock only addContact
+  };
+});
 
 // Mock SourceSelect component
 vi.mock('../SourceSelect', () => ({
@@ -30,6 +33,7 @@ describe('JobForm', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear(); // Clear localStorage before each test
   });
 
   it('renders all form fields', () => {
@@ -53,25 +57,29 @@ describe('JobForm', () => {
       tags: []
     };
 
-    addContact.mockResolvedValueOnce(mockData);
+    // Use the mocked function from the imported namespace
+    const mockedAddContact = vi.mocked(api.addContact);
+    mockedAddContact.mockResolvedValueOnce(mockData);
 
     render(<JobForm onApplicationAdded={mockOnApplicationAdded} />);
 
-    await user.type(screen.getByLabelText(/entreprise/i), mockData.entreprise);
-    await user.type(screen.getByLabelText(/poste/i), mockData.poste);
-    
-    const sourceSelect = screen.getByTestId('source-select');
-    await user.selectOptions(sourceSelect, mockData.source);
-    
-    await user.type(screen.getByLabelText(/date de postulation/i), mockData.datePostulation);
-    
-    const statutSelect = screen.getByLabelText(/statut/i);
-    await user.selectOptions(statutSelect, mockData.statut);
+    await act(async () => {
+      await user.type(screen.getByLabelText(/entreprise/i), mockData.entreprise);
+      await user.type(screen.getByLabelText(/poste/i), mockData.poste);
+      
+      const sourceSelect = screen.getByTestId('source-select');
+      await user.selectOptions(sourceSelect, mockData.source);
+      
+      fireEvent.change(screen.getByLabelText(/date de postulation/i), { target: { value: mockData.datePostulation, name: 'datePostulation', type: 'date' } });
+      
+      const statutSelect = screen.getByLabelText(/statut/i);
+      await user.selectOptions(statutSelect, mockData.statut);
 
-    await user.click(screen.getByRole('button', { name: /ajouter/i }));
+      await user.click(screen.getByRole('button', { name: /ajouter/i }));
+    });
 
     await waitFor(() => {
-      expect(addContact).toHaveBeenCalledWith(expect.objectContaining({
+      expect(mockedAddContact).toHaveBeenCalledWith(expect.objectContaining({
         entreprise: mockData.entreprise,
         poste: mockData.poste,
         source: mockData.source,
@@ -97,7 +105,7 @@ describe('JobForm', () => {
     await waitFor(() => {
       expect(entrepriseInput).toBeInvalid();
       expect(posteInput).toBeInvalid();
-      expect(addContact).not.toHaveBeenCalled();
+      expect(vi.mocked(api.addContact)).not.toHaveBeenCalled();
     });
   });
-}); 
+});

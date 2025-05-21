@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Bell, Calendar, Mail, X, Clock, Check } from 'lucide-react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Bell, Calendar, X, Clock, Check } from 'lucide-react'; // Removed Mail
 
 export default function InterviewReminder({ interview, onClose, onSave }) {
   const [reminderSettings, setReminderSettings] = useState({
@@ -58,7 +59,7 @@ export default function InterviewReminder({ interview, onClose, onSave }) {
         </div>
 
         <div className="mb-4 p-3 bg-custom-blue-50 rounded-lg">
-          <h4 className="font-medium text-custom-blue-700 mb-1">Détails de l'entrevue</h4>
+          <h4 className="font-medium text-custom-blue-700 mb-1">Détails de l&apos;entrevue</h4>
           <div className="text-sm text-custom-blue-600 space-y-1">
             <p className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
@@ -166,4 +167,13 @@ export default function InterviewReminder({ interview, onClose, onSave }) {
       </div>
     </div>
   );
-} 
+}
+
+InterviewReminder.propTypes = {
+  interview: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired, // Or PropTypes.instanceOf(Date)
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
+};

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 import { updateContact } from '../services/api';
 import SourceSelect from './SourceSelect';
 import { X, Plus, Calendar } from 'lucide-react';
 
-export default function EditJobForm({ application, onClose, onUpdate }) {
+export default function EditJobForm({ application, onClose, onUpdate }) { // Renamed props to match usage
   const [formData, setFormData] = useState({
     entreprise: application.entreprise,
     poste: application.poste,
@@ -33,7 +34,7 @@ export default function EditJobForm({ application, onClose, onUpdate }) {
       onUpdate();
       onClose();
     } catch (error) {
-      console.error('Erreur lors de la mise à jour:', error);
+      console.error('Erreur lors de la mise à jour:', error); // Keep this console.error for now
     }
   };
 
@@ -232,7 +233,7 @@ export default function EditJobForm({ application, onClose, onUpdate }) {
                 <h4 className="text-lg font-medium mb-4">Nouvelle entrevue</h4>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Type d'entrevue</label>
+                    <label className="block text-sm font-medium text-gray-700">Type d&apos;entrevue</label>
                     <select
                       value={newInterview.type}
                       onChange={e => setNewInterview(prev => ({ ...prev, type: e.target.value }))}
@@ -327,4 +328,28 @@ export default function EditJobForm({ application, onClose, onUpdate }) {
       </form>
     </div>
   );
-} 
+}
+
+EditJobForm.propTypes = {
+  application: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    entreprise: PropTypes.string.isRequired,
+    poste: PropTypes.string.isRequired,
+    source: PropTypes.string.isRequired,
+    datePostulation: PropTypes.string.isRequired, // Expecting string to be split
+    statut: PropTypes.string.isRequired,
+    emailEmployeur: PropTypes.string,
+    telephoneContact: PropTypes.string,
+    dateRelance: PropTypes.string, // Expecting string to be split
+    commentaires: PropTypes.string,
+    entrevues: PropTypes.arrayOf(PropTypes.shape({
+      type: PropTypes.string,
+      date: PropTypes.string,
+      notes: PropTypes.string,
+      lieu: PropTypes.string,
+      lienVisio: PropTypes.string,
+    })),
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+};

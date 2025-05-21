@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react'; // Added within
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import EditJobForm from '../EditJobForm';
@@ -112,11 +112,13 @@ describe('EditJobForm', () => {
     );
 
     // Add a new tag
-    const tagInput = screen.getByPlaceholder(/ajouter un tag/i);
+    const tagInput = screen.getByPlaceholderText(/ajouter un tag/i); // Corrected here
     await user.type(tagInput, 'nouveau tag{enter}');
 
     // Remove an existing tag
-    const removeTagButton = screen.getByRole('button', { name: /supprimer urgent/i });
+    // Finding the button more robustly by finding the tag text first
+    const tagToRemove = screen.getByText('urgent').closest('span');
+    const removeTagButton = within(tagToRemove).getByRole('button');
     await user.click(removeTagButton);
 
     await user.click(screen.getByRole('button', { name: /sauvegarder/i }));
@@ -127,4 +129,4 @@ describe('EditJobForm', () => {
       }));
     });
   });
-}); 
+});

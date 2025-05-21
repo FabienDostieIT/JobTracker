@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function StatusBadge({ status }) {
   const getStatusColor = (status) => {
@@ -17,4 +17,8 @@ export default function StatusBadge({ status }) {
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
   );
-} 
+}
+
+StatusBadge.propTypes = {
+  status: PropTypes.string.isRequired,
+};

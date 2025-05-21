@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 import { Briefcase } from 'lucide-react';
 
 const SourceLogo = ({ source, className = "" }) => {
@@ -37,4 +37,9 @@ const SourceLogo = ({ source, className = "" }) => {
   );
 };
 
-export default SourceLogo; 
+SourceLogo.propTypes = {
+  source: PropTypes.string,
+  className: PropTypes.string,
+};
+
+export default SourceLogo;

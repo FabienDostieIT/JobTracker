@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 import { X } from 'lucide-react';
 
 export default function PreferencesModal({ isOpen, onClose }) {
@@ -70,4 +70,9 @@ export default function PreferencesModal({ isOpen, onClose }) {
       </div>
     </div>
   );
-} 
+}
+
+PreferencesModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+};
