@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import { getContacts, deleteContact } from '../services/api';
 import JobForm from './JobForm';
 import EditJobForm from './EditJobForm';
 import SourceLogo from './SourceLogo';
-import { Trash2, Edit, ChevronDown, ChevronUp, Search, SlidersHorizontal, BarChart } from 'lucide-react';
-import InterviewNotifications from './InterviewNotifications';
+// Search icon from lucide-react was unused
+import { Trash2, Edit, ChevronDown, ChevronUp, SlidersHorizontal, BarChart } from 'lucide-react'; 
+import InterviewNotifications from './InterviewNotifications'; // This is used
 
 export default function JobTracker() {
   const [applications, setApplications] = useState([]);
@@ -157,31 +159,31 @@ export default function JobTracker() {
   };
 
   // Component definitions
-  const StatsPanel = ({ applications }) => {
-    const stats = useMemo(() => {
-      return applications.reduce((acc, app) => {
-        acc[app.statut] = (acc[app.statut] || 0) + 1;
-        return acc;
-      }, {});
-    }, [applications]);
+  // const StatsPanel = ({ applications }) => { // Commenting out StatsPanel as it's unused
+  //   const stats = useMemo(() => {
+  //     return applications.reduce((acc, app) => {
+  //       acc[app.statut] = (acc[app.statut] || 0) + 1;
+  //       return acc;
+  //     }, {});
+  //   }, [applications]);
 
-    return (
-      <div className="bg-white dark:bg-dark-bg-secondary rounded-lg shadow-sm p-4 mb-6">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-dark-text-primary">
-          <BarChart className="w-5 h-5" />
-          Statistiques
-        </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {Object.entries(stats).map(([status, count]) => (
-            <div key={status} className={`p-3 rounded-lg ${getStatusColor(status)}`}>
-              <div className="text-2xl font-bold">{count}</div>
-              <div className="text-sm">{getStatusText(status)}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
+  //   return (
+  //     <div className="bg-white dark:bg-dark-bg-secondary rounded-lg shadow-sm p-4 mb-6">
+  //       <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-dark-text-primary">
+  //         <BarChart className="w-5 h-5" />
+  //         Statistiques
+  //       </h3>
+  //       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+  //         {Object.entries(stats).map(([status, count]) => (
+  //           <div key={status} className={`p-3 rounded-lg ${getStatusColor(status)}`}>
+  //             <div className="text-2xl font-bold">{count}</div>
+  //             <div className="text-sm">{getStatusText(status)}</div>
+  //           </div>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   const Application = ({ application, onDelete, onEdit, isExpanded, onToggle }) => {
     return (
@@ -296,9 +298,37 @@ export default function JobTracker() {
       </div>
     );
   };
+  
+  Application.propTypes = {
+    application: PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      entreprise: PropTypes.string.isRequired,
+      poste: PropTypes.string.isRequired,
+      source: PropTypes.string.isRequired,
+      statut: PropTypes.string.isRequired,
+      datePostulation: PropTypes.string.isRequired,
+      emailEmployeur: PropTypes.string,
+      telephoneContact: PropTypes.string,
+      documents: PropTypes.arrayOf(PropTypes.string),
+      tags: PropTypes.arrayOf(PropTypes.string),
+      commentaires: PropTypes.string,
+    }).isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    isExpanded: PropTypes.bool.isRequired,
+    onToggle: PropTypes.func.isRequired,
+  };
+
+  // Prop types for StatsPanel (if it were to be used)
+  // StatsPanel.propTypes = {
+  //   applications: PropTypes.arrayOf(PropTypes.shape({
+  //     statut: PropTypes.string.isRequired,
+  //   })).isRequired,
+  // };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* <StatsPanel applications={applications} /> */} {/* StatsPanel is not currently rendered */}
       <div className="lg:col-span-7">
         <div className="bg-white dark:bg-dark-bg-secondary rounded-lg shadow-md p-6">
           <JobForm onApplicationAdded={handleAddApplication} />

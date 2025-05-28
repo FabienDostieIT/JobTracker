@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { addContact } from '../services/api';
 import SourceSelect from './SourceSelect';
 import { AlertCircle, X, Plus } from 'lucide-react';
@@ -41,7 +42,7 @@ export default function JobForm({ onApplicationAdded }) {
   const [tagInput, setTagInput] = useState('');
   const [errors, setErrors] = useState({});
   const [isDirty, setIsDirty] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  // const [isSaving, setIsSaving] = useState(false); // Marked as unused
 
   // Sauvegarder le brouillon automatiquement
   useEffect(() => {
@@ -106,13 +107,25 @@ export default function JobForm({ onApplicationAdded }) {
    * Handles input changes in the form
    * @param {Event} e - Input change event
    */
-  const handleChange = (e) => {
-    const { name, value, type, multiple } = e.target;
-    
-    if (type === 'select-multiple') {
-      const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
-      setFormData(prev => ({ ...prev, [name]: selectedOptions }));
+  const handleChange = (eOrValue) => {
+    let name, value, type;
+
+    if (eOrValue && typeof eOrValue === 'object' && eOrValue.target) {
+      // Standard event object
+      name = eOrValue.target.name;
+      value = eOrValue.target.value;
+      type = eOrValue.target.type;
+
+      if (type === 'select-multiple') {
+        const selectedOptions = Array.from(eOrValue.target.selectedOptions).map(option => option.value);
+        setFormData(prev => ({ ...prev, [name]: selectedOptions }));
+      } else {
+        setFormData(prev => ({ ...prev, [name]: value }));
+      }
     } else {
+      // Direct value, assume it's for 'source' as per SourceSelect usage
+      name = 'source'; 
+      value = eOrValue;
       setFormData(prev => ({ ...prev, [name]: value }));
     }
     
@@ -149,7 +162,7 @@ export default function JobForm({ onApplicationAdded }) {
       return;
     }
 
-    setIsSaving(true);
+    // setIsSaving(true); // Marked as unused
     try {
       const response = await addContact(formData);
       console.log('Contact ajouté:', response);
@@ -175,19 +188,19 @@ export default function JobForm({ onApplicationAdded }) {
         submit: 'Erreur lors de l\'ajout de la candidature. Veuillez réessayer.'
       }));
     } finally {
-      setIsSaving(false);
+      // setIsSaving(false); // Marked as unused
     }
   };
 
-  const renderError = (fieldName) => {
-    if (!errors[fieldName]) return null;
-    return (
-      <div className="mt-1 text-sm text-red-600 flex items-center gap-1">
-        <AlertCircle className="w-4 h-4" />
-        <span>{errors[fieldName]}</span>
-      </div>
-    );
-  };
+  // const renderError = (fieldName) => { // Marked as unused
+  // if (!errors[fieldName]) return null;
+  // return (
+  // <div className="mt-1 text-sm text-red-600 flex items-center gap-1">
+  // <AlertCircle className="w-4 h-4" />
+  // <span>{errors[fieldName]}</span>
+  // </div>
+  // );
+  // };
 
   const handleAddTag = (e) => {
     e.preventDefault();
@@ -348,7 +361,7 @@ export default function JobForm({ onApplicationAdded }) {
           <option value="Références">Références</option>
         </select>
         <p className="mt-1 text-sm text-gray-500 dark:text-dark-text-secondary">
-          Maintenez Ctrl (Cmd sur Mac) pour sélectionner plusieurs documents
+          Maintenez Ctrl &lpar;Cmd sur Mac&rpar; pour sélectionner plusieurs documents
         </p>
       </div>
 
@@ -423,4 +436,8 @@ export default function JobForm({ onApplicationAdded }) {
       </div>
     </form>
   );
-} 
+}
+
+JobForm.propTypes = {
+  onApplicationAdded: PropTypes.func.isRequired,
+};

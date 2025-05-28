@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 import { updateContact } from '../services/api';
 import { X, Plus, Calendar } from 'lucide-react';
 import SourceSelect from './SourceSelect';
@@ -154,9 +155,10 @@ export default function EditJobForm({ contact, onClose, onContactUpdated }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Entreprise</label>
+            <label htmlFor="entreprise" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Entreprise</label>
             <input
               type="text"
+              id="entreprise"
               name="entreprise"
               value={formData.entreprise}
               onChange={handleChange}
@@ -166,9 +168,10 @@ export default function EditJobForm({ contact, onClose, onContactUpdated }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Poste</label>
+            <label htmlFor="poste" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Poste</label>
             <input
               type="text"
+              id="poste"
               name="poste"
               value={formData.poste}
               onChange={handleChange}
@@ -178,8 +181,9 @@ export default function EditJobForm({ contact, onClose, onContactUpdated }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Source</label>
+            <label htmlFor="source" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Source</label>
             <SourceSelect
+              id="source"
               value={formData.source}
               onChange={(value) => setFormData(prev => ({ ...prev, source: value }))}
               className="mt-1 block w-full"
@@ -187,9 +191,10 @@ export default function EditJobForm({ contact, onClose, onContactUpdated }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Date de postulation</label>
+            <label htmlFor="datePostulation" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Date de postulation</label>
             <input
               type="date"
+              id="datePostulation"
               name="datePostulation"
               value={formData.datePostulation}
               onChange={handleChange}
@@ -199,8 +204,9 @@ export default function EditJobForm({ contact, onClose, onContactUpdated }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Statut</label>
+            <label htmlFor="statut" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Statut</label>
             <select
+              id="statut"
               name="statut"
               value={formData.statut}
               onChange={handleChange}
@@ -217,8 +223,8 @@ export default function EditJobForm({ contact, onClose, onContactUpdated }) {
 
           {formData.statut === 'entretien' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">
-                Date de l'entretien
+              <label htmlFor="dateEntretien" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">
+                Date de l&apos;entretien
                 {contact.calendarEventUrl && (
                   <a
                     href={contact.calendarEventUrl}
@@ -233,6 +239,7 @@ export default function EditJobForm({ contact, onClose, onContactUpdated }) {
               </label>
               <input
                 type="datetime-local"
+                id="dateEntretien"
                 name="dateEntretien"
                 value={formData.dateEntretien}
                 onChange={handleChange}
@@ -242,9 +249,10 @@ export default function EditJobForm({ contact, onClose, onContactUpdated }) {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Email de l'employeur</label>
+            <label htmlFor="emailEmployeur" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Email de l&apos;employeur</label>
             <input
               type="email"
+              id="emailEmployeur"
               name="emailEmployeur"
               value={formData.emailEmployeur}
               onChange={handleChange}
@@ -253,9 +261,10 @@ export default function EditJobForm({ contact, onClose, onContactUpdated }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Téléphone du contact</label>
+            <label htmlFor="telephoneContact" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Téléphone du contact</label>
             <input
               type="tel"
+              id="telephoneContact"
               name="telephoneContact"
               value={formData.telephoneContact}
               onChange={handleChange}
@@ -264,9 +273,10 @@ export default function EditJobForm({ contact, onClose, onContactUpdated }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Documents envoyés</label>
+            <label htmlFor="documents" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Documents envoyés</label>
             <input
               type="text"
+              id="documents"
               name="documents"
               value={formData.documents.join(', ')}
               onChange={handleChange}
@@ -276,10 +286,11 @@ export default function EditJobForm({ contact, onClose, onContactUpdated }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Tags</label>
+            <label htmlFor="tags" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Tags</label>
             <div className="flex items-center space-x-2">
               <input
                 type="text"
+                id="tags"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
@@ -314,8 +325,9 @@ export default function EditJobForm({ contact, onClose, onContactUpdated }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Commentaires</label>
+            <label htmlFor="commentaires" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary">Commentaires</label>
             <textarea
+              id="commentaires"
               name="commentaires"
               value={formData.commentaires}
               onChange={handleChange}
@@ -344,4 +356,25 @@ export default function EditJobForm({ contact, onClose, onContactUpdated }) {
       </div>
     </div>
   );
-} 
+}
+
+EditJobForm.propTypes = {
+  contact: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    entreprise: PropTypes.string.isRequired,
+    poste: PropTypes.string.isRequired,
+    source: PropTypes.string.isRequired,
+    datePostulation: PropTypes.string.isRequired,
+    statut: PropTypes.string.isRequired,
+    documents: PropTypes.arrayOf(PropTypes.string),
+    emailEmployeur: PropTypes.string,
+    telephoneContact: PropTypes.string,
+    commentaires: PropTypes.string,
+    tags: PropTypes.arrayOf(PropTypes.string),
+    dateEntretien: PropTypes.string,
+    calendarEventId: PropTypes.string,
+    calendarEventUrl: PropTypes.string,
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
+  onContactUpdated: PropTypes.func.isRequired,
+};

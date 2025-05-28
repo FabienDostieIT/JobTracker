@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { getSources, addSource, deleteSource } from '../services/api';
-import { Plus, X, Image as ImageIcon, Loader2, AlertCircle, Trash2 } from 'lucide-react';
+// ImageIcon was unused
+import { Plus, X, Loader2, AlertCircle, Trash2 } from 'lucide-react'; 
 
 export default function SourceSelect({ value, onChange, className }) {
   const [sources, setSources] = useState([]);
@@ -194,7 +196,7 @@ export default function SourceSelect({ value, onChange, className }) {
                     setIsDirty(true);
                   }}
                   className="w-full rounded-lg border-gray-200 focus:border-custom-blue-600 focus:ring-2 focus:ring-custom-blue-200"
-                  placeholder="Ex: LinkedIn, Indeed..."
+                  placeholder="Ex&colon; LinkedIn, Indeed..."
                 />
               </div>
 
@@ -290,4 +292,10 @@ export default function SourceSelect({ value, onChange, className }) {
       )}
     </div>
   );
-} 
+}
+
+SourceSelect.propTypes = {
+  value: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+  className: PropTypes.string,
+};

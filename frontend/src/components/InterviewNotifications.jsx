@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Bell, Calendar, X } from 'lucide-react';
 
 export default function InterviewNotifications({ applications }) {
@@ -47,7 +48,7 @@ export default function InterviewNotifications({ applications }) {
       <button
         onClick={() => setShowNotifications(!showNotifications)}
         className="relative p-2 text-gray-600 hover:text-custom-blue-600 transition-colors"
-        aria-label="Notifications d'entretiens"
+        aria-label="Notifications d&apos;entretiens"
       >
         <Bell className="w-6 h-6" />
         {notifications.length > 0 && (
@@ -87,7 +88,7 @@ export default function InterviewNotifications({ applications }) {
                   <span className={`font-medium ${
                     notification.isToday ? 'text-blue-600' : 'text-gray-900'
                   }`}>
-                    {notification.isToday ? "Aujourd'hui" : formatDate(notification.date)}
+                    {notification.isToday ? "Aujourd&apos;hui" : formatDate(notification.date)}
                   </span>
                   {!notification.isToday && (
                     <span className="text-gray-500">
@@ -109,4 +110,14 @@ export default function InterviewNotifications({ applications }) {
       )}
     </div>
   );
-} 
+}
+
+InterviewNotifications.propTypes = {
+  applications: PropTypes.arrayOf(PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    entreprise: PropTypes.string.isRequired,
+    poste: PropTypes.string.isRequired,
+    statut: PropTypes.string.isRequired,
+    datePostulation: PropTypes.string.isRequired, // Or PropTypes.instanceOf(Date) if it's a Date object
+  })).isRequired,
+};
